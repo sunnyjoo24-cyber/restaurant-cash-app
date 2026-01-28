@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>Restaurant Cash App</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="manifest" href="manifest.json">
 <style>
 body { font-family: Arial, sans-serif; background:#f2f2f2; margin:0; }
 .container { max-width:600px; margin:20px auto; background:#fff; padding:20px; border-radius:12px; }
@@ -19,42 +18,63 @@ button { background:#2e7d32; color:#fff; border:none; font-size:16px; }
 </style>
 </head>
 <body>
+
 <div class="container">
 <h1>Restaurant Cash App</h1>
-<h2>Branch & Cashier</h2>
-<select><option>Main Branch</option></select>
-<input placeholder="Cashier name">
+
 <h2>Cash Drawer</h2>
-<input type="number" placeholder="$20 bills">
-<input type="number" placeholder="$10 bills">
-<input type="number" placeholder="$5 bills">
+<input id="twenty" type="number" placeholder="$20 bills">
+<input id="ten" type="number" placeholder="$10 bills">
+<input id="five" type="number" placeholder="$5 bills">
+
 <h3>Extra Change (Backup)</h3>
-<input type="number" placeholder="Extra cash amount">
-<button>Calculate</button>
+<input id="extra" type="number" placeholder="Extra cash amount">
+
+<button onclick="calculateCash()">Calculate</button>
+
 <div class="box">
-<p><strong>Cash Income Today:</strong> $____</p>
+<p><strong>Cash Income Today:</strong> $<span id="result">0</span></p>
 </div>
+
 <h2>Deposit</h2>
-<input placeholder="Customer name">
-<input type="number" placeholder="Deposit amount">
-<select>
-<option>Pending</option>
-<option>Applied</option>
-<option>Refunded</option>
-<option>Cancelled</option>
-</select>
-<button>Add Deposit</button>
+<input id="custName" placeholder="Customer name">
+<input id="depositAmt" type="number" placeholder="Deposit amount">
+<button onclick="addDeposit()">Add Deposit</button>
+<div id="depositLog"></div>
+
 <h2>Refund</h2>
-<input placeholder="Reason">
-<input type="number" placeholder="Amount">
-<select><option>Cash</option><option>Card</option></select>
-<button>Save Refund</button>
-<p style="font-size:12px;color:#777">Offline ready ✔</p>
+<input id="refundReason" placeholder="Reason">
+<input id="refundAmt" type="number" placeholder="Amount">
+<button onclick="saveRefund()">Save Refund</button>
+<div id="refundLog"></div>
+
 </div>
+
 <script>
-if ("serviceWorker" in navigator) {
-navigator.serviceWorker.register("sw.js");
+function calculateCash(){
+let t = (parseInt(document.getElementById('twenty').value)||0)*20;
+let te = (parseInt(document.getElementById('ten').value)||0)*10;
+let f = (parseInt(document.getElementById('five').value)||0)*5;
+let e = parseInt(document.getElementById('extra').value)||0;
+let total = t+te+f+e;
+document.getElementById('result').innerText = total;
+localStorage.setItem("cashTotal", total);
+}
+
+function addDeposit(){
+let name = document.getElementById('custName').value;
+let amt = document.getElementById('depositAmt').value;
+let log = document.getElementById('depositLog');
+log.innerHTML += `<div class="log">💰 ${name} - $${amt}</div>`;
+}
+
+function saveRefund(){
+let reason = document.getElementById('refundReason').value;
+let amt = document.getElementById('refundAmt').value;
+let log = document.getElementById('refundLog');
+log.innerHTML += `<div class="log">↩️ ${reason} - $${amt}</div>`;
 }
 </script>
+
 </body>
 </html>
